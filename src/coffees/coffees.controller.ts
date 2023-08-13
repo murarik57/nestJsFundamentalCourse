@@ -34,7 +34,9 @@ export class CoffeesController {
   //     return `This is ur id :${params.id}`;
   //   }
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
+    console.log(typeof id);
+
     return this.coffeesService.findOne(id);
     // return `This is ur id: #${id}`;
   }
