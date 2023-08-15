@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Coffee } from './entities/coffee.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Falvor } from './entities/falvor.entity';
@@ -19,6 +19,7 @@ export class CoffeesService {
     private readonly coffeeRepository: Repository<Coffee>,
     @InjectRepository(Falvor)
     private readonly flavorRepository: Repository<Falvor>,
+    private readonly connection: Connection,
   ) {}
 
   findAll(paginationQuery: PaginationQueryDto) {
@@ -77,6 +78,13 @@ export class CoffeesService {
   async remove(id: string) {
     const coffee = await this.coffeeRepository.findOneBy({ id: +id });
     return this.coffeeRepository.remove(coffee);
+  }
+  async recommendCoffee(coffee: Coffee) {
+    const queryRunner = this.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    // more stuff which I didnt found usefull
   }
 
   private async preloadFlavorByName(name: string): Promise<Falvor> {
